@@ -1,0 +1,352 @@
+{
+  "info": {
+    "_postman_id": "1e42f0de-afca-4c4f-a3cd-bef97a7b0d39",
+    "name": "E-Learning Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{defaultPassword}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.environment.set('studentAccessToken', json.accessToken);",
+                  "if (json.refreshToken) pm.environment.set('studentRefreshToken', json.refreshToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Teacher",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{teacherEmail}}\",\n  \"password\": \"{{defaultPassword}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.environment.set('teacherAccessToken', json.accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{defaultPassword}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.environment.set('adminAccessToken', json.accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Student Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/refresh",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{studentRefreshToken}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) pm.environment.set('studentAccessToken', json.accessToken);",
+                  "if (json.refreshToken) pm.environment.set('studentRefreshToken', json.refreshToken);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Audit",
+      "item": [
+        {
+          "name": "Log User Action",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/audit/user-action",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"course.view\",\n  \"targetType\": \"course\",\n  \"targetId\": \"course-123\",\n  \"metadata\": {\n    \"source\": \"postman\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Log Admin Activity",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/audit/admin-activity",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"admin.user.delete\",\n  \"targetType\": \"user\",\n  \"targetId\": \"user-123\",\n  \"metadata\": {\n    \"activityType\": \"admin\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Audit Logs (Teacher/Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherAccessToken}}" }],
+            "url": "{{baseUrl}}/audit?page=1&limit=20"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "AI Doubt Solver",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/ai/doubt-solver",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Explain Newton's second law in simple words\",\n  \"context\": \"Physics basics\"\n}"
+            }
+          }
+        },
+        {
+          "name": "AI Notes Summarizer (Text)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/ai/notes-summarizer/text",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Paste your long notes here...\",\n  \"maxBullets\": 6\n}"
+            }
+          }
+        },
+        {
+          "name": "AI Study Planner",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/ai/study-planner",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subjects\": [\"Math\", \"Science\", \"English\"],\n  \"weakTopics\": [\"Algebra\", \"Thermodynamics\"],\n  \"hoursPerDay\": 3,\n  \"planDays\": 7,\n  \"examDate\": \"2026-04-15\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Smart Tests & Progress",
+      "item": [
+        {
+          "name": "Create Course (Teacher)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacherAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/courses",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman Demo Course\",\n  \"description\": \"Course for testing progress and smart tests\",\n  \"category\": \"programming\",\n  \"level\": \"beginner\",\n  \"duration\": \"4 weeks\",\n  \"price\": 0\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "const id = json?.course?._id;",
+                  "if (id) pm.environment.set('courseId', id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Enroll in Course (Student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentAccessToken}}" }
+            ],
+            "url": "{{baseUrl}}/courses/{{courseId}}/enroll"
+          }
+        },
+        {
+          "name": "Update Lesson Progress (Student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/courses/{{courseId}}/progress/lessons",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"moduleIndex\": 0,\n  \"lessonIndex\": 0,\n  \"completed\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Get My Course Progress (Student)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentAccessToken}}" }
+            ],
+            "url": "{{baseUrl}}/courses/{{courseId}}/progress/my"
+          }
+        },
+        {
+          "name": "Get Course Progress Analytics (Teacher)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacherAccessToken}}" }
+            ],
+            "url": "{{baseUrl}}/courses/{{courseId}}/progress"
+          }
+        },
+        {
+          "name": "Create Smart Test (Teacher)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacherAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/assignments/smart-tests",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": \"{{courseId}}\",\n  \"title\": \"Postman Smart Test 1\",\n  \"description\": \"Auto-graded test\",\n  \"dueDate\": \"2026-12-31T23:59:59.000Z\",\n  \"durationMinutes\": 30,\n  \"questions\": [\n    {\n      \"prompt\": \"2 + 2 = ?\",\n      \"options\": [\"3\", \"4\", \"5\", \"6\"],\n      \"correctOptionIndex\": 1,\n      \"marks\": 2\n    },\n    {\n      \"prompt\": \"Capital of France?\",\n      \"options\": [\"Paris\", \"Rome\", \"Berlin\", \"Madrid\"],\n      \"correctOptionIndex\": 0,\n      \"marks\": 1\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "const id = json?.smartTest?._id;",
+                  "if (id) pm.environment.set('assignmentId', id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Submit Smart Test (Student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentAccessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/assignments/smart-tests/{{assignmentId}}/submit",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startedAt\": \"2026-03-21T10:00:00.000Z\",\n  \"timeSpentSeconds\": 420,\n  \"answers\": [\n    { \"questionIndex\": 0, \"selectedOptionIndex\": 1 },\n    { \"questionIndex\": 1, \"selectedOptionIndex\": 0 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Smart Test Analytics (Teacher)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacherAccessToken}}" }
+            ],
+            "url": "{{baseUrl}}/assignments/smart-tests/{{assignmentId}}/analytics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get My Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentAccessToken}}" }],
+            "url": "{{baseUrl}}/notifications/my?page=1&limit=20"
+          }
+        },
+        {
+          "name": "Mark All Notifications Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentAccessToken}}" }],
+            "url": "{{baseUrl}}/notifications/my/read-all"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": []
+}

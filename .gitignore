@@ -1,0 +1,49 @@
+# Node dependencies
+**/node_modules
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+
+# Build outputs
+**/dist
+**/build
+**/out
+
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Cache
+**/.cache
+**/.turbo
+**/.vite
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Cypress artifacts
+**/cypress/screenshots
+**/cypress/videos
+
+# Misc
+*.bak
+*.tmp
+
+# Ignore nested frontend repo at root level
+/elearning-platform
